@@ -22,7 +22,7 @@ namespace Mastermind
             do
             {
                 //prompt them if they want to play again
-                //UI.ClearConsoleLine(UI.PromptLine + 1);
+                UI.ClearConsoleLine(UI.PromptLine + 2);
                 Console.Write("Play Again? (Y/N): ");
 
                 //check if they said yes
@@ -231,7 +231,7 @@ namespace Mastermind
             {
                 get
                 {
-                    return ScoreboardLine + 4;
+                    return ScoreboardLine + 3;
                 }
             }
 
@@ -295,7 +295,7 @@ namespace Mastermind
     struct Settings
     {
         //the maximum number of guesses allowed per game
-        public const int MAX_GUESSES = 10;
+        public const int MAX_GUESSES = 7;
         //the length of the code to guess
         public const int CODE_LENGTH = 4;
         //the allowed characters in the code
