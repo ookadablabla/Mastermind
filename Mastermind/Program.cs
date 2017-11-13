@@ -30,12 +30,12 @@ namespace Mastermind
             //Add the header for the scoreboard
             Console.SetCursorPosition(0, 0);
             UI.WriteInColor(UI.title, ConsoleColor.Green);
-            Console.WriteLine("Guesses:" + UI.consoleSpacing + "Results:");
+            Console.WriteLine(UI.scoreboardHeader);
             
 
             //keep prompting the user for a guess
             while (!userHasWon && guesses < Settings.MAX_GUESSES) {
-                //prompt for a new guess, make room for the size of the header, and some extra spacing
+                //prompt for a new guess
                 UI.ClearConsoleLine(UI.PromptLine);
                 Console.Write(UI.promptMessage);
 
@@ -43,10 +43,9 @@ namespace Mastermind
 
                 //if the user input a valid guess
                 if (IsValidGuess(currentGuess)) {
-                    //increment the number of guesses
                     guesses++;
 
-                    //clear the prompt and error for the previous question
+                    //clear the prompt and error from the previous question
                     UI.ClearConsoleLine(UI.ErrorLine - 1);
                     UI.ClearConsoleLine(UI.PromptLine - 1);
                     
@@ -67,9 +66,9 @@ namespace Mastermind
             //clear out the current message, and write the win/lose message
             UI.ClearConsoleLine(UI.PromptLine);
             if(userHasWon) {
-                Console.WriteLine("You solved it!");
+                Console.WriteLine(UI.winMessage);
             } else {
-                Console.WriteLine("You lose :(");
+                Console.WriteLine(UI.loseMessage);
             }
 
         }
@@ -134,8 +133,8 @@ namespace Mastermind
 
             //build up the resulting score
             StringBuilder score = new StringBuilder();
-            score.Append('+', matching.Count);
-            score.Append('-', wrongPosition.Count);
+            score.Append(UI.correctScoreSymbol, matching.Count);
+            score.Append(UI.incorrectScoreSymbol, wrongPosition.Count);
 
             return score.ToString();
 
@@ -145,7 +144,7 @@ namespace Mastermind
         {
             /** String constants to make the rest of the code more readable **/
 
-            public static readonly String consoleSpacing = new String(' ', Settings.CODE_LENGTH);
+            public static readonly String scoreboardHeader = "Guesses:" + NSpaces(Settings.CODE_LENGTH) + "Results:";
             public static readonly String promptMessage = "Guess the " + Settings.CODE_LENGTH + " digit code: ";
             public static readonly String errorMessage = "Invalid input - Please guess a " + Settings.CODE_LENGTH +
                                                     " digit code consisting only of the characters: " +
@@ -157,6 +156,13 @@ namespace Mastermind
                                                      "| |  | | (_| \\__ \\ ||  __/ |  | | | | | | | | | | (_| |\n" +
                                                      "|_|  |_|\\__,_|___/\\__\\___|_|  |_| |_| |_|_|_| |_|\\__,_|\n\n";
 
+            //chars to show on the scoreboard for correct/incorrect guesses
+            public static readonly char correctScoreSymbol = '+';
+            public static readonly char incorrectScoreSymbol = '-';
+
+            //end game messages
+            public static readonly String winMessage = "You solved it!";
+            public static readonly String loseMessage = "You lose :(";
 
             /** some helper properties to clear up some math **/
 
@@ -182,16 +188,16 @@ namespace Mastermind
                 }
             }
 
-
-            public static String ScoreBoardText {
+            //the scoreboard text showing the guess, and the score for that guess
+            public static string ScoreBoardText {
                 get {
                     return "\r" +
                             currentGuess +
                             //add spaces to line it up with the header
-                            UI.RepeatCharacter(' ', "Guesses:".Length) +
+                            NSpaces("Guesses:".Length) +
                             ScoreFromGuess(currentGuess) +
                             //clear the rest of the line
-                            UI.RepeatCharacter(' ', 20);
+                            NSpaces(20);
                 }
             }
 
@@ -201,7 +207,7 @@ namespace Mastermind
             //clears the specified line in the console
             public static void ClearConsoleLine(int lineNumber) {
                 Console.SetCursorPosition(0, lineNumber);
-                Console.Write(RepeatCharacter(' ', 100));
+                Console.Write(NSpaces(100));
                 Console.SetCursorPosition(0, lineNumber);
             }
 
@@ -212,11 +218,11 @@ namespace Mastermind
                 Console.ForegroundColor = ConsoleColor.White;
             }
 
-            //a simple helper method to repeat a character a certain number of times
-            public static String RepeatCharacter(char toRepeat, int repetitions) {
+            //a helped method to return a string of a lot of spaces
+            public static String NSpaces(int numberOfSpaces) {
                 StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < repetitions; i++) {
-                    builder.Append(toRepeat);
+                for (int i = 0; i < numberOfSpaces; i++) {
+                    builder.Append(' ');
                 }
                 return builder.ToString();
             }
