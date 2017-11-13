@@ -16,8 +16,24 @@ namespace Mastermind
         public static void Main(String[] args) {
             NewGame();
 
-            //wait for a keypress before closing
-            Console.ReadKey();
+            //allow the user to play another game
+            ConsoleKey userInput;
+            do {
+                //prompt them if they want to play again
+                UI.ClearConsoleLine(UI.PromptLine + 1);
+                Console.Write("Play Again? (Y/N): ");
+
+                //check if they said yes
+                userInput = Console.ReadKey().Key;
+                if (userInput == ConsoleKey.Y) {
+                    Console.Clear();
+                    NewGame();
+                }
+
+            //loop until they say no
+            } while (userInput != ConsoleKey.N);
+
+
         }
 
         //resets the variables and starts a new game of Mastermind
@@ -207,7 +223,7 @@ namespace Mastermind
             //clears the specified line in the console
             public static void ClearConsoleLine(int lineNumber) {
                 Console.SetCursorPosition(0, lineNumber);
-                Console.Write(NSpaces(100));
+                Console.Write(NSpaces(Console.WindowWidth));
                 Console.SetCursorPosition(0, lineNumber);
             }
 
