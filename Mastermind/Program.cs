@@ -46,6 +46,7 @@ namespace Mastermind
             //Add the header for the scoreboard
             Console.SetCursorPosition(0, 0);
             UI.WriteInColor(UI.title, ConsoleColor.Green);
+            Console.WriteLine(UI.instructions);
             Console.WriteLine(UI.scoreboardHeader);
             
 
@@ -166,15 +167,24 @@ namespace Mastermind
                                                     " digit code consisting only of the characters: " +
                                                     String.Join("", Settings.VALID_CHARS) + "\n";
 
-            public static readonly String title = " __  __           _                      _           _ \n" +
-                                                     "|  \\/  | __ _ ___| |_ ___ _ __ _ __ ___ (_)_ __   __| |\n" +
-                                                     "| |\\/| |/ _` / __| __/ _ \\ '__| '_ ` _ \\| | '_ \\ / _` |\n" +
-                                                     "| |  | | (_| \\__ \\ ||  __/ |  | | | | | | | | | | (_| |\n" +
-                                                     "|_|  |_|\\__,_|___/\\__\\___|_|  |_| |_| |_|_|_| |_|\\__,_|\n\n";
+            public static readonly String title =   " __  __           _                      _           _ \n" +
+                                                    "|  \\/  | __ _ ___| |_ ___ _ __ _ __ ___ (_)_ __   __| |\n" +
+                                                    "| |\\/| |/ _` / __| __/ _ \\ '__| '_ ` _ \\| | '_ \\ / _` |\n" +
+                                                    "| |  | | (_| \\__ \\ ||  __/ |  | | | | | | | | | | (_| |\n" +
+                                                    "|_|  |_|\\__,_|___/\\__\\___|_|  |_| |_| |_|_|_| |_|\\__,_|\n" +
+                                                    NSpaces(15)+"By: Quinten Hutchison - Quinten@Case.edu\n\n";
 
             //chars to show on the scoreboard for correct/incorrect guesses
             public static readonly char correctScoreSymbol = '+';
             public static readonly char incorrectScoreSymbol = '-';
+
+            public static readonly String instructions =    "Try to find the " + Settings.CODE_LENGTH + " digit code by entering guesses below\n" +
+                                                            "You have " + Settings.MAX_GUESSES + " tries to find the code.\n'" +
+                                                            correctScoreSymbol + "' indicates a correct guess in the right location\n'" +
+                                                            incorrectScoreSymbol + "' indicates a correct guess in the wrong location\n";
+
+
+
 
             //end game messages
             public static readonly String winMessage = "You solved it!";
@@ -185,15 +195,15 @@ namespace Mastermind
             //the current line of the scoreboard
             public static int ScoreboardLine {
                 get {
-                    //6 = height of the title + header row
-                    return 6 + guesses;
+                    //12 = height of the title + header row + instructions
+                    return 12 + guesses;
                 }
             }
 
             //Where the user will be prompted for input
             public static int PromptLine {
                 get {
-                    return ScoreboardLine + 3;
+                    return ScoreboardLine + 4;
                 }
             }
 
