@@ -10,6 +10,7 @@ namespace Mastermind
         //variables used throughout the game
         private string code;
         private int guesses;
+        private Boolean userHasWon = false;
         String currentGuess;
 
         //some constants
@@ -49,6 +50,18 @@ namespace Mastermind
             }
         }
 
+        private String ScoreBoardText {
+            get {
+                return "\r" +
+                        currentGuess +
+                        //add spaces to line it up with the header
+                        RepeatCharacter(' ', "Guesses:".Length) +
+                        ScoreFromGuess(currentGuess) +
+                        //clear the rest of the line
+                        RepeatCharacter(' ', 20);
+            }
+        }
+
 
         public static void Main(String[] args) {
             Game game = new Game();
@@ -66,52 +79,49 @@ namespace Mastermind
             //initialize/reset all of the variables
             guesses = 0;
             RandomizeCode();
-            
+            userHasWon = false;
+
+            //Add the header for the scoreboard
+            Console.SetCursorPosition(0, ScoreboardLine - 1);
             Console.WriteLine("Guesses:" + consoleSpacing + "Results:");
-    
-            while (guesses < Settings.MAX_GUESSES) {
+            
+
+            //keep prompting the user for a guess
+            while (!userHasWon && guesses < Settings.MAX_GUESSES) {
                 //prompt for a new guess, make room for the size of the header, and some extra spacing
                 ClearConsoleLine(PromptLine);
                 Console.Write(prompt);
 
                 currentGuess = Console.ReadLine();
 
+                //if the user input a valid guess
                 if (IsValidGuess(currentGuess)) {
+                    //increment the number of guesses
                     guesses++;
 
                     //clear the prompt and error for the previous question
                     ClearConsoleLine(ErrorLine - 1);
                     ClearConsoleLine(PromptLine - 1);
-
-                    //account for the MASTERMID text and header
+                    
+                    //add the text to the scoreboard
                     Console.SetCursorPosition(0, ScoreboardLine);
+                    Console.WriteLine(ScoreBoardText);
 
+                    //check if the user won
+                    userHasWon = currentGuess.Equals(code);
 
-
-                    Console.WriteLine("\r" +
-                                        currentGuess +
-                                        //correctly space
-                                        RepeatCharacter(' ', "Guesses:".Length) +
-                                        "++++" +
-                                        //clear the rest of the line
-                                        RepeatCharacter(' ', 20));
+                //otherwise write an error
                 } else {
                     Console.SetCursorPosition(0, ErrorLine);
                     WriteInColor(errorMessage, ConsoleColor.Red);
                 }
-                
+            }
 
-
-
-
-
-
-
-               
-
-
-
-                
+            ClearConsoleLine(PromptLine);
+            if(userHasWon) {
+                Console.WriteLine("You solved it!");
+            } else {
+                Console.WriteLine("You lose :(");
             }
 
         }
@@ -154,6 +164,42 @@ namespace Mastermind
 
             //return true if they're all valid
             return true;
+        }
+
+        //checks the guess against the correct code, and returns the resulting score
+        private String ScoreFromGuess(String guess) {
+            List<char> matching = new List<char>();
+            List<char> wrongPosition = new List<char>();
+            char currentChar;
+
+            //check the guess against the correct code
+            for (int i=0; i<guess.Length; i++) {
+                currentChar = guess[i];
+
+                //first check if the code has the character at all
+                if (code.Contains(currentChar)) {
+                    //if it does, check to see if the positions match
+                    if(code[i].Equals(currentChar)) {
+                        matching.Add(currentChar);
+
+                    //if they don't, add them to the wrong position list
+                    } else {
+                        wrongPosition.Add(currentChar);
+                    }
+
+                }
+            }
+
+            //per rule 2, remove the ones we've already matched
+            wrongPosition = wrongPosition.Except(matching).ToList();
+
+            //build up the resulting score
+            StringBuilder score = new StringBuilder();
+            score.Append('+', matching.Count);
+            score.Append('-', wrongPosition.Count);
+
+            return score.ToString();
+
         }
 
         //clears the specified line in the console
