@@ -51,7 +51,7 @@ namespace Mastermind
             Console.SetCursorPosition(0, 0);
             UI.WriteInColor(UI.title, ConsoleColor.Green);
             Console.WriteLine(UI.instructions);
-            Console.WriteLine(UI.scoreboardHeader + code);
+            Console.WriteLine(UI.scoreboardHeader);
 
 
             //keep prompting the user for a guess
@@ -93,7 +93,6 @@ namespace Mastermind
             if (userHasWon)
             {
                 Console.WriteLine(UI.winMessage);
-                Console.WriteLine("Solution was: " + code);
             }
             else
             {
