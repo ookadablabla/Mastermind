@@ -51,7 +51,7 @@ namespace Mastermind
             Console.SetCursorPosition(0, 0);
             UI.WriteInColor(UI.title, ConsoleColor.Green);
             Console.WriteLine(UI.instructions);
-            Console.WriteLine(UI.scoreboardHeader);
+            Console.WriteLine(UI.scoreboardHeader + code);
 
 
             //keep prompting the user for a guess
@@ -93,6 +93,7 @@ namespace Mastermind
             if (userHasWon)
             {
                 Console.WriteLine(UI.winMessage);
+                Console.WriteLine("Solution was: " + code);
             }
             else
             {
@@ -144,6 +145,7 @@ namespace Mastermind
         {
             List<char> matching = new List<char>();
             List<char> wrongPosition = new List<char>();
+            bool[] alreadyMatched = new bool[code.Length];
             char currentChar;
 
             //check the guess against the correct code
@@ -151,25 +153,33 @@ namespace Mastermind
             {
                 currentChar = guess[i];
 
-                //first check if the code has the character at all
-                if (code.Contains(currentChar))
+                //try and find the first unmatched position of this character in the code
+                int firstMatch = -1;
+                for (int j=0; j<code.Length; j++)
                 {
-                    //if it does, check to see if the positions match
-                    if (code[i].Equals(currentChar))
+                    if(code[j].Equals(currentChar) && !alreadyMatched[j])
+                    {
+                        firstMatch = j;
+                        break;
+                    }
+                }
+
+                //if we found one, check if it's in the correct place or not
+                if(firstMatch != -1)
+                {
+                    alreadyMatched[firstMatch] = true;
+                    if (code[firstMatch].Equals(guess[firstMatch]))
                     {
                         matching.Add(currentChar);
                     }
-                    //if they don't, add them to the wrong position list
                     else
                     {
                         wrongPosition.Add(currentChar);
                     }
-
+                    
                 }
-            }
 
-            //per rule 2, remove the ones we've already matched
-            wrongPosition = wrongPosition.Except(matching).ToList();
+            }
 
             //build up the resulting score
             StringBuilder score = new StringBuilder();
@@ -177,7 +187,6 @@ namespace Mastermind
             score.Append(UI.incorrectScoreSymbol, wrongPosition.Count);
 
             return score.ToString();
-
         }
 
         private static class UI
